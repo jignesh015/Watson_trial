@@ -86,8 +86,8 @@ public class ExampleStreaming : MonoBehaviour
         _service = new SpeechToText(credentials);
         _service.StreamMultipart = true;
 
-        Active = true;
-        StartRecording();
+        //Active = true;
+        //StartRecording();
     }
 
     public bool Active
@@ -119,6 +119,11 @@ public class ExampleStreaming : MonoBehaviour
         }
     }
 
+	public void BtnRecord() {
+		Active = true;
+		StartRecording();
+	}
+
     private void StartRecording()
     {
         if (_recordingRoutine == 0)
@@ -130,6 +135,7 @@ public class ExampleStreaming : MonoBehaviour
 
     private void StopRecording()
     {
+		Debug.Log ("Recording stopped");
         if (_recordingRoutine != 0)
         {
             Microphone.End(_microphoneID);
@@ -211,9 +217,16 @@ public class ExampleStreaming : MonoBehaviour
             {
                 foreach (var alt in res.alternatives)
                 {
-                    string text = string.Format("{0} ({1}, {2:0.00})\n", alt.transcript, res.final ? "Final" : "Interim", alt.confidence);
-                    Log.Debug("ExampleStreaming.OnRecognize()", text);
-                    ResultsField.text = text;
+//                    string text = string.Format("{0} ({1}, {2:0.00})\n", alt.transcript, res.final ? "Final" : "Interim", alt.confidence);
+//                    Log.Debug("ExampleStreaming.OnRecognize()", text);
+//                    ResultsField.text = text;
+
+					if (alt.transcript.Trim () == "42") {
+						ResultsField.text = "Password correct";
+						StopRecording ();
+					} else {
+						ResultsField.text = "Password incorrect. Try again";
+					}
                 }
 
                 if (res.keywords_result != null && res.keywords_result.keyword != null)
